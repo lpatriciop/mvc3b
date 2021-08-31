@@ -240,7 +240,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="btnEditar">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Editar"/>
+            <Property name="text" type="java.lang.String" value="Edit"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="btnEliminar">

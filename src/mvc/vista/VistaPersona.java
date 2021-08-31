@@ -292,7 +292,7 @@ public class VistaPersona extends javax.swing.JFrame {
 
         btnCrear.setText("Crear");
 
-        btnEditar.setText("Editar");
+        btnEditar.setText("Edit");
 
         btnEliminar.setText("Eliminar");
 
