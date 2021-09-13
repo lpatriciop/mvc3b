@@ -341,17 +341,17 @@ public class VistaPersona extends javax.swing.JFrame {
 
         tblPersonas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "ID", "Nombres", "Apellidos", "Edad"
+                "ID", "Nombres", "Apellidos", "Edad", "Foto"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                true, true, false, true
+                true, true, false, true, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {

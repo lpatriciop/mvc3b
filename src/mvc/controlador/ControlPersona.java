@@ -20,11 +20,15 @@ import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.xml.ws.Holder;
 import mvc.modelo.ModeloPersona;
 import mvc.modelo.Persona;
 import mvc.vista.VistaPersona;
+import sun.swing.table.DefaultTableCellHeaderRenderer;
 
 /**
  *
@@ -41,7 +45,7 @@ public class ControlPersona {
         //Inicializaciones
         vista.setTitle("CRUD PERSONAS");
         vista.setVisible(true);
-        cargaLista();
+        cargaLista("");
     }
     
     public void iniciaControl(){
@@ -64,7 +68,7 @@ public class ControlPersona {
         };
 
    //Controlar los eventos de la vista
-    vista.getBtnRefrescar().addActionListener(l->cargaLista());
+    vista.getBtnRefrescar().addActionListener(l->cargaLista(""));
     vista.getBtnCrear().addActionListener(l->cargarDialogo(1));
     vista.getBtnEditar().addActionListener(l->cargarDialogo(2));
     vista.getBtnExaminar().addActionListener(l->examinaFoto());
@@ -85,27 +89,50 @@ public class ControlPersona {
         vista.getDlgPersona().setVisible(true);
     
     }
-    private void cargaLista(){
-    //Acciones necesarios para extraer los datos MODELO Y Mostrar en la Vista
-        DefaultTableModel tblModel; //Estructura JTbable
-        tblModel=(DefaultTableModel)vista.getTblPersonas().getModel();
-        tblModel.setNumRows(0);
-        List<Persona> lista=modelo.listaPersonas();
-        lista.stream().forEach(p->{
-        String[] persona={p.getIdPersona(),p.getNombre(),p.getApellido()};
-        tblModel.addRow(persona);
-        });
-        
-    }
+//    private void cargaLista(){
+//    //Acciones necesarios para extraer los datos MODELO Y Mostrar en la Vista
+//        DefaultTableModel tblModel; //Estructura JTbable
+//        tblModel=(DefaultTableModel)vista.getTblPersonas().getModel();
+//        tblModel.setNumRows(0);
+//        List<Persona> lista=modelo.listaPersonas();
+//        lista.stream().forEach(p->{
+//        String[] persona={p.getIdPersona(),p.getNombre(),p.getApellido()};
+//        tblModel.addRow(persona);
+//        });
+//        
+//    }
     private void cargaLista(String aguja){
     //Acciones necesarios para extraer los datos MODELO Y Mostrar en la Vista
+        vista.getTblPersonas().setDefaultRenderer(Object.class, new ImgenTabla());
+        vista.getTblPersonas().setRowHeight(100);
+        DefaultTableCellRenderer renderer= new DefaultTableCellHeaderRenderer();
+        
         DefaultTableModel tblModel; //Estructura JTbable
         tblModel=(DefaultTableModel)vista.getTblPersonas().getModel();
         tblModel.setNumRows(0);
         List<Persona> lista=modelo.listaPersonas(aguja);
+        int ncols=tblModel.getColumnCount();
+        Holder<Integer> i=new Holder<>(0);
         lista.stream().forEach(p->{
-        String[] persona={p.getIdPersona(),p.getNombre(),p.getApellido()};
-        tblModel.addRow(persona);
+            
+         tblModel.addRow(new Object[ncols]);
+           vista.getTblPersonas().setValueAt(p.getIdPersona(), i.value, 0);
+           vista.getTblPersonas().setValueAt(p.getNombre(), i.value, 1);
+           vista.getTblPersonas().setValueAt(p.getApellido(), i.value, 2);
+           //completar datos.
+           Image img= p.getFoto();
+           if(img!=null){
+               Image nimg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+               ImageIcon icon = new ImageIcon(nimg);
+               renderer.setIcon(icon);
+               vista.getTblPersonas().setValueAt(new JLabel(icon), i.value, 4);
+           }else{
+                vista.getTblPersonas().setValueAt(null, i.value, 4);
+           }
+          i.value++;  
+//        String[] persona={p.getIdPersona(),p.getNombre(),p.getApellido()};
+//        tblModel.addRow(persona);
+        
         });
         
     }
@@ -142,6 +169,9 @@ public class ControlPersona {
       persona.setNombre(nombre);
       persona.setApellido(apellido);
       persona.setFechaNacimiento(fecha);
+      //FOTO
+      ImageIcon ic=(ImageIcon)vista.getLblFoto().getIcon();
+      persona.setFoto(ic.getImage());
       
      if (persona.grabar()){
          JOptionPane.showMessageDialog(vista, "Persona Creada Satisfactoriamente");
