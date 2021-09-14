@@ -6,8 +6,10 @@
 package mvc;
 
 import mvc.controlador.ControlPersona;
+import mvc.controlador.ControlPrincipal;
 import mvc.modelo.ModeloPersona;
 import mvc.vista.VistaPersona;
+import mvc.vista.VistaPrincipal;
 
 /**
  *
@@ -20,9 +22,8 @@ public class Mvc {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        ModeloPersona modelo= new ModeloPersona();
-        VistaPersona vista =new VistaPersona();
-        ControlPersona control= new ControlPersona(modelo, vista);
+        VistaPrincipal vista= new VistaPrincipal();
+        ControlPrincipal control= new ControlPrincipal(vista);
         control.iniciaControl();
         
     }
