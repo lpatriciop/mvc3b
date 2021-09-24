@@ -25,9 +25,16 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.xml.ws.Holder;
+import mvc.modelo.ConexionPG;
 import mvc.modelo.ModeloPersona;
 import mvc.modelo.Persona;
 import mvc.vista.VistaPersona;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 import sun.swing.table.DefaultTableCellHeaderRenderer;
 
 /**
@@ -75,7 +82,26 @@ public class ControlPersona {
     vista.getBtnAceptar().addActionListener(l->grabaPersona());
     //Controlador Buscar
     vista.getTxtBuscar().addKeyListener(kl);
+    //Imprimir
+    vista.getBtnImprimir().addActionListener(l->imprimir());
+    }
     
+    /*
+    IMPRESION Y VISTA PRELIMINAR DE REPORTES DE JASPER STUDIO
+    
+    */
+    
+    private void imprimir(){
+        ConexionPG con=new ConexionPG();
+        try {
+            JasperReport jr= (JasperReport)JRLoader.loadObject(getClass().getResource("/mvc/vista/reportes/Blank_1.jasper"));
+            JasperPrint jp = JasperFillManager.fillReport(jr,null,con.getCon());
+            JasperViewer jv= new JasperViewer(jp);
+            jv.setVisible(true);
+        } catch (JRException ex) {
+            Logger.getLogger(ControlPersona.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
     private void cargarDialogo(int origen){
         vista.getDlgPersona().setSize(600,300);
@@ -89,18 +115,6 @@ public class ControlPersona {
         vista.getDlgPersona().setVisible(true);
     
     }
-//    private void cargaLista(){
-//    //Acciones necesarios para extraer los datos MODELO Y Mostrar en la Vista
-//        DefaultTableModel tblModel; //Estructura JTbable
-//        tblModel=(DefaultTableModel)vista.getTblPersonas().getModel();
-//        tblModel.setNumRows(0);
-//        List<Persona> lista=modelo.listaPersonas();
-//        lista.stream().forEach(p->{
-//        String[] persona={p.getIdPersona(),p.getNombre(),p.getApellido()};
-//        tblModel.addRow(persona);
-//        });
-//        
-//    }
     private void cargaLista(String aguja){
     //Acciones necesarios para extraer los datos MODELO Y Mostrar en la Vista
         vista.getTblPersonas().setDefaultRenderer(Object.class, new ImgenTabla());
